@@ -23,9 +23,9 @@ echo "数据文件: $DATA_FILE"
 echo "输出文件: $OUTPUT_FILE"
 
 # 使用改进的启动命令
-CUDA_VISIBLE_DEVICES=4,5,6 \
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 \
 accelerate launch \
-    --num_processes 3 \
+    --num_processes 8 \
     eval.py \
     --model_name "$EVAL_MODEL" \
     --benchmark_name "$BENCHMARK" \
