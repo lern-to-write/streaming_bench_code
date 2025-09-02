@@ -29,9 +29,7 @@ class LlavaOneVision_ReKV(LlavaOnevisionForConditionalGeneration, Abstract_ReKV)
         batch_size, frames, channels, height, width = pixel_values_videos.shape
         pixel_values_videos = pixel_values_videos.view(batch_size * frames, channels, height, width)
         
-        
         video_features = self.vision_tower(pixel_values_videos, output_hidden_states=True)
-        
         
         selected_video_feature = video_features.hidden_states[self.config.vision_feature_layer]
         frames=selected_video_feature.shape[0]
