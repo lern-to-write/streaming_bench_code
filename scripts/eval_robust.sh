@@ -16,23 +16,20 @@ DATA_FILE="./data/questions_${TASK}.json"
 OUTPUT_FILE="./data/${TASK}_output_${EVAL_MODEL}.json"
 BENCHMARK="Streaming"
 
-echo "开始执行分布式评估..."
+echo "开始执行评估..."
 echo "模型: $EVAL_MODEL"
 echo "任务: $TASK"
 echo "数据文件: $DATA_FILE"
 echo "输出文件: $OUTPUT_FILE"
 
 # 使用改进的启动命令
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 \
-accelerate launch \
-    --num_processes 8 \
-    eval.py \
+CUDA_VISIBLE_DEVICES=0,1 \
+python eval.py \
     --model_name "$EVAL_MODEL" \
     --benchmark_name "$BENCHMARK" \
     --data_file "$DATA_FILE" \
     --output_file "$OUTPUT_FILE" \
-    --context_time $CONTEXT_TIME \
-    --timeout_minutes 30 \
-    --max_retries 4
+    --context_time "$CONTEXT_TIME"
 
 echo "评估完成!"
+

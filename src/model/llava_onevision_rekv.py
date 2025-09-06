@@ -261,15 +261,15 @@ accelerator=None, local_rank=None, n_init=None, n_local=15000, topk=64, chunk_si
     - 否则退回到单 GPU（cuda:0）行为
     注意：我们不再使用 device_map="auto"，以避免 HF 自动切分到所有可见显卡。
     """
-    # 1) 决定设备字符串
-    if accelerator is not None:
-        local_rank = accelerator.local_process_index
-        device = torch.device(f"cuda:{local_rank}")
-    elif local_rank is not None:
-        device = torch.device(f"cuda:{local_rank}")
-    else:
-        device = torch.device("cuda:0")
-
+    # # 1) 决定设备字符串
+    # if accelerator is not None:
+    #     local_rank = accelerator.local_process_index
+    #     device = torch.device(f"cuda:{local_rank}")
+    # elif local_rank is not None:
+    #     device = torch.device(f"cuda:{local_rank}")
+    # else:
+    #     device = torch.device("cuda:0")
+    device = 'cuda'
 
     n_frame_tokens = 196
     processor = LlavaOnevisionProcessor.from_pretrained(model_path)
@@ -291,7 +291,7 @@ accelerator=None, local_rank=None, n_init=None, n_local=15000, topk=64, chunk_si
     # 2) 从权重加载模型：禁用 device_map='auto'，并指定整个模型放到当前进程的 GPU（避免全局分布式切分）
     model = LlavaOneVision_ReKV.from_pretrained(
     model_path,
-    device_map={"": f"cuda:{device.index}"},
+    device_map="auto",
     low_cpu_mem_usage=True,
     torch_dtype=torch.float16,
     processor=processor,
@@ -303,12 +303,12 @@ accelerator=None, local_rank=None, n_init=None, n_local=15000, topk=64, chunk_si
     )
 
 
-    # 确认模型在目标 device 上
-    try:
-        model.to(device)
-    except Exception:
-        # 有些 HF API 已经把模型放到 device_map 指定的显卡，这里忽略异常
-        pass
+    # # 确认模型在目标 device 上
+    # try:
+    #     model.to(device)
+    # except Exception:
+    #     # 有些 HF API 已经把模型放到 device_map 指定的显卡，这里忽略异常
+    #     pass
 
 
     model.language_model = patch_hf(model.language_model, **inf_llm_config)

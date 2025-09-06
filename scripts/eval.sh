@@ -34,7 +34,7 @@ BENCHMARK="Streaming"
 
 if [ "$EVAL_MODEL" = "MiniCPM-V" ]; then
     conda activate MiniCPM-V
-    accelerate launch --num_processes 4 eval.py --model_name $EVAL_MODEL --benchmark_name $BENCHMARK --data_file $DATA_FILE --output_file $OUTPUT_FILE --context_time $CONTEXT_TIME
+    CUDA_VISIBLE_DEVICES=$Devices python eval.py --model_name $EVAL_MODEL --benchmark_name $BENCHMARK --data_file $DATA_FILE --output_file $OUTPUT_FILE --context_time $CONTEXT_TIME
 fi
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --num_processes 8 eval.py --model_name "rekv" --benchmark_name "Streaming" --data_file "./data/questions_real.json" --output_file "./data/real_output_rekv.json" --context_time -1
 # For sequential question answering(Offline + Text Instruction)
